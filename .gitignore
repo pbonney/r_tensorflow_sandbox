@@ -1,3 +1,4 @@
 .RData
 .Rhistory
-pkmital/.DS_Store
+/pkmital/.DS_Store
+/MNIST-data

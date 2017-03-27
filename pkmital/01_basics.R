@@ -92,25 +92,17 @@ convolve <- function(img, W) {
     W <- tf$reshape(W, dims)
   }
 
-  cat("Inside convolve 1")
-
   if (length(img$get_shape()$as_list()) == 2) {
-    cat("2D")
     # num x height x width x channels
     dims <- c(1L, img$get_shape()$as_list(), 1L)
     img <- tf$reshape(img, dims)
   } else if (length(img$get_shape()$as_list()) == 3) {
-    cat("Find dims")
     dims <- c(1L, img$get_shape()$as_list())
-    cat("reshape")
     img <- tf$reshape(img, dims)
     # If the image is 3 channels then our convolution kernel
     # needs to be repeated for each input channel
-    cat("turn W to 3D")
     W <- tf$concat(axis=2L, values=c(W, W, W))
   }
-
-  cat("Inside convolve 2")
 
   # NB: "stride" is how many values to skip for the dimensions
   # of num, height, width, channels
