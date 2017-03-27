@@ -70,7 +70,7 @@ weight_variable <- function(shape) {
 
 bias_variable <- function(shape) {
   initial <- tf$constant(0.1, shape = shape)
-  tf$Varialbe(initial)
+  tf$Variable(initial)
 }
 
 # TensorFlow's convolution and pooling operations allow for great flexibility.
@@ -128,7 +128,7 @@ W_fc1 <- weight_variable(shape(7L * 7L * 64L, 1024L))
 b_fc1 <- bias_variable(shape(1024L))
 
 h_pool2_flat <- tf$reshape(h_pool2, shape(-1L, 7L * 7L * 64L))
-h_fc1 <- tf$nn$relu(tf$matmul(h_pool2_flat, W_fc1) + b_vc1)
+h_fc1 <- tf$nn$relu(tf$matmul(h_pool2_flat, W_fc1) + b_fc1)
 
 # Dropout! Apply dropout (https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf)
 # before the readout layer to reduce overfitting. Create a placeholder for the
@@ -157,7 +157,7 @@ print("TRAINING CNN!!!")
 cross_entropy <- tf$reduce_mean(-tf$reduce_sum(y_ * tf$log(y_conv), reduction_indices = 1L))
 train_step <- tf$train$AdamOptimizer(1e-4)$minimize(cross_entropy)
 correct_prediction <- tf$equal(tf$argmax(y_conv, 1L), tf$argmax(y_, 1L))
-accuracy <- tf$reduce_mean(tf$cast(correct_prediction, float32))
+accuracy <- tf$reduce_mean(tf$cast(correct_prediction, tf$float32))
 sess$run(tf$global_variables_initializer())
 
 for (i in 1:20000) {
