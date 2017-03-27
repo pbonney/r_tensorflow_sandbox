@@ -3,7 +3,6 @@
 # NB: leaves out all the plotting bits
 
 library(tensorflow)
-library(rPython)  # No cheating! This is just so we can use skimage to import an image near the end
 
 # First, a tf$tensor
 n_values <- 32L
@@ -63,6 +62,7 @@ result7 <- z_g$eval()
 
 # Note: we can list all the operations of a graph
 ops <- tf$get_default_graph()$get_operations()
+op_names <- NULL
 for (op in ops) {
   op_names <- c(op_names, op$name)
 }
@@ -87,22 +87,30 @@ convolve <- function(img, W) {
   # The W matrix is 2D
   # But conv2d will need a 4D tensor:
   # height x width x n_input x n_output
-  if (len(W$get_shape()) == 2) {
-    dims <- W$get_shape()$as_list() + c(1L, 1L)
+  if (length(W$get_shape()) == 2) {
+    dims <- c(W$get_shape()$as_list(), 1L, 1L)
     W <- tf$reshape(W, dims)
   }
 
-  if (len(img$get_shape()) == 2) {
+  cat("Inside convolve 1")
+
+  if (length(img$get_shape()$as_list()) == 2) {
+    cat("2D")
     # num x height x width x channels
-    dims <- c(1L) + img$get_shape()$as_list() + c(1L)
+    dims <- c(1L, img$get_shape()$as_list(), 1L)
     img <- tf$reshape(img, dims)
-  } else if (len(img$get_shape()) == 3) {
-    dims <- c(1L) + img$get_shape()$as_list()
+  } else if (length(img$get_shape()$as_list()) == 3) {
+    cat("Find dims")
+    dims <- c(1L, img$get_shape()$as_list())
+    cat("reshape")
     img <- tf$reshape(img, dims)
     # If the image is 3 channels then our convolution kernel
     # needs to be repeated for each input channel
+    cat("turn W to 3D")
     W <- tf$concat(axis=2L, values=c(W, W, W))
   }
+
+  cat("Inside convolve 2")
 
   # NB: "stride" is how many values to skip for the dimensions
   # of num, height, width, channels
@@ -111,3 +119,10 @@ convolve <- function(img, W) {
 }
 
 # Load up an image
+img <- tf$image$decode_jpeg(tf$read_file('./pkmital/data/bus.jpg'))
+
+# Create placeholder for graph that can store any input...
+
+# ... and a graph that can convolve the image with a gabor filter
+
+# Finally, send the image into the graph
