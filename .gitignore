@@ -2,3 +2,4 @@
 .Rhistory
 /pkmital/.DS_Store
 /MNIST-data
+*.png
